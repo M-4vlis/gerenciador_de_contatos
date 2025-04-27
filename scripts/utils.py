@@ -47,7 +47,7 @@ def cadastrar_contato(lista_contatos):
         }
         lista_contatos.append(contato)
         print('\n✅ Contato cadastrado com sucesso.')
-        salvar_contatos()
+        salvar_contatos(lista_contatos)
         opcao = str(input('\nDeseja cadastrar um novo contato? (S/N) ')).upper().strip()
         if opcao != 'S':
             break
@@ -76,8 +76,9 @@ def menu_principal(lista_contatos):
     while True:
         print('\n===== Menu ContatON =====')
         print('1 - Cadastrar novo contato\n' 
-              '2 - Listar todos os contatos\n' 
-              '3 - Sair\n')
+              '2 - Listar todos os contatos\n'
+              '3 - Buscar Contatos (Nome ou E-mail)\n' 
+              '4 - Sair\n')
         try:
             escolha = int(input('Escolha uma opção: '))
         except:
@@ -85,10 +86,61 @@ def menu_principal(lista_contatos):
             continue
         if escolha == 1:
             cadastrar_contato(lista_contatos)
+            return
         elif escolha == 2:
             listar_contatos(lista_contatos)
+            return
         elif escolha == 3:
+            buscar_contatos(lista_contatos)
+            return
+        elif escolha == 4:
             print('Obrigado por usar o ContatON CLI. Até logo!')
             break
         else:
             print('Opção inválida.')
+
+def buscar_contatos(lista_contatos):
+    while True:
+        pergunta = input('Buscar por (Nome/ E-mail): ').lower().strip().replace('-', '')
+        respostas = 'nome', 'email'
+        if pergunta not in respostas:
+            print('Opção inválida, tente novamente.')
+            continue
+        if pergunta == 'nome':
+            while True:
+                nome = input('Digite o nome: ').capitalize().strip()
+                if not nome:
+                    print('Digite um nome válido.')
+                    continue
+                for i in lista_contatos:
+                    if nome in i['Nome']:
+                        print('\nResultado:\n')
+                        print('🔹 Contato')
+                        print(f'Nome: {i['Nome']}')
+                        print(f'Telefone: {i['Telefone']}')
+                        print(f'E-mail: {i['Email']}')
+                        return
+                print('Nenhum contato encontrado.')
+                return
+        elif pergunta == 'email':
+            while True:
+                email = input('Digite o e-mail: ').lower().strip()
+                if not email:
+                    print('Digite um e-mail válido.')
+                    continue
+                if '@' not in email and '.' not in email:
+                    print('Digite um e-mail válido.')
+                    continue
+                for i in lista_contatos:
+                    if email in i['Email']:
+                        print('\nResultado:\n')
+                        print('🔹 Contato')
+                        print(f'Nome: {i['Nome']}')
+                        print(f'Telefone: {i['Telefone']}')
+                        print(f'E-mail: {i['Email']}')
+                        return
+                print('Nenhum contato encontrado')
+                return
+
+
+
