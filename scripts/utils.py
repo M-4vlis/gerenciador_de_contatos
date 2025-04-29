@@ -101,46 +101,29 @@ def menu_principal(lista_contatos):
 
 def buscar_contatos(lista_contatos):
     while True:
-        pergunta = input('Buscar por (Nome/ E-mail): ').lower().strip().replace('-', '')
-        respostas = 'nome', 'email'
-        if pergunta not in respostas:
+        campo_escolhido = input('Buscar por (Nome/ E-mail): ').lower().strip().replace('-', '')
+        opcoes_validas = ('nome', 'email')
+        if campo_escolhido not in opcoes_validas:
             print('Opção inválida, tente novamente.')
             continue
-        if pergunta == 'nome':
-            while True:
-                nome = input('Digite o nome: ').capitalize().strip()
-                if not nome:
-                    print('Digite um nome válido.')
-                    continue
-                for i in lista_contatos:
-                    if nome in i['Nome']:
-                        print('\nResultado:\n')
-                        print('🔹 Contato')
-                        print(f'Nome: {i['Nome']}')
-                        print(f'Telefone: {i['Telefone']}')
-                        print(f'E-mail: {i['Email']}')
-                        return
-                print('Nenhum contato encontrado.')
+
+        while True:
+            termo_busca = input('Digite o termo de busca: ').lower().strip()
+            if not termo_busca:
+                print('Digite um termo válido.')
+                continue
+            if campo_escolhido == 'email':
+                if '@' not in termo_busca and '.' not in termo_busca:
+                        print('Digite um e-mail válido.')
+                        continue
+            resultado = [contato for contato in lista_contatos if termo_busca in contato[campo_escolhido.capitalize()].lower()]
+            if len(resultado) == 0:
+                print('\n❌ Nenhum contato encontrado.')
                 return
-        elif pergunta == 'email':
-            while True:
-                email = input('Digite o e-mail: ').lower().strip()
-                if not email:
-                    print('Digite um e-mail válido.')
-                    continue
-                if '@' not in email and '.' not in email:
-                    print('Digite um e-mail válido.')
-                    continue
-                for i in lista_contatos:
-                    if email in i['Email']:
-                        print('\nResultado:\n')
-                        print('🔹 Contato')
-                        print(f'Nome: {i['Nome']}')
-                        print(f'Telefone: {i['Telefone']}')
-                        print(f'E-mail: {i['Email']}')
-                        return
-                print('Nenhum contato encontrado')
-                return
-
-
-
+            print('\nResultados encontrados:\n')
+            for i in resultado:
+                print('🔹 Contato')
+                print(f'Nome: {i['Nome']}')
+                print(f'Telefone: {i['Telefone']}')
+                print(f'E-mail: {i['Email']}\n')
+            return
