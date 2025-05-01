@@ -1,17 +1,20 @@
 import os, json, uuid
 
-# Verifica se a pasta data existe, e caso ela não existe, cria a pasta e o arquivo contatos.json
-if os.path.exists('./data'):
-    file_contacts = './data/contatos.json'
-else:
-    os.mkdir('data')
-    with open('data/contatos.json', 'w') as f:
-        file_contacts = './data/contatos.json'
+def obter_caminho_arquivo():
+    if os.path.exists('./data'):
+        caminho_arquivo = './data/contatos.json'
+    else:
+        os.mkdir('data')
+        with open('data/contatos.json', 'w') as f:
+            caminho_arquivo = './data/contatos.json'
+    return caminho_arquivo
+
+FILE_CONTACTS = obter_caminho_arquivo()
 
 def carregar_contatos():
-    if os.path.exists(file_contacts):
+    if os.path.exists(FILE_CONTACTS):
         try:
-            with open(file_contacts, 'r') as f:
+            with open(FILE_CONTACTS, 'r') as f:
                 lista_contatos = json.load(f)
                 return lista_contatos
         except json.JSONDecodeError:
@@ -63,41 +66,53 @@ def listar_contatos(lista_contatos):
         print("Nome:".ljust(10), contato['Nome'])
         print("Telefone:".ljust(10), contato['Telefone'])
         print("E-mail:".ljust(10), contato['Email'])
+        print("ID:".ljust(10), contato['ID'])
         print('='*30)
 
 def salvar_contatos(lista_contatos):
     try:
-        with open(file_contacts, 'w') as f:
+        with open(FILE_CONTACTS, 'w') as f:
             json.dump(lista_contatos, f, indent=4)
     except Exception as e:
         print(f'Erro inesperado: {e}')
 
-def menu_principal(lista_contatos):
+def exibir_menu():
+    print('\n===== Menu ContatON =====')
+    print('1 - Cadastrar novo contato')
+    print('2 - Listar todos os contatos')
+    print('3 - Buscar contato')
+    print('4 - Excluir contato')
+    print('5 - Sair')
+
+def obter_opcao_usuario():
     while True:
-        print('\n===== Menu ContatON =====')
-        print('1 - Cadastrar novo contato\n' 
-              '2 - Listar todos os contatos\n'
-              '3 - Buscar Contatos (Nome ou E-mail)\n' 
-              '4 - Sair\n')
+        exibir_menu()
         try:
-            escolha = int(input('Escolha uma opção: '))
+            escolha = int(input('\nEscolha uma opção: '))
         except:
             print('Escolha inválida, digite um número.')
             continue
-        if escolha == 1:
-            cadastrar_contato(lista_contatos)
-            return
-        elif escolha == 2:
-            listar_contatos(lista_contatos)
-            return
-        elif escolha == 3:
-            buscar_contatos(lista_contatos)
-            return
-        elif escolha == 4:
+        return escolha
+    
+def obter_funcoes_menu():
+    funcoes = {1:cadastrar_contato,
+               2:listar_contatos,
+               3:buscar_contatos,
+               4:excluir_contato}
+    return funcoes
+
+def menu_principal(lista_contatos):
+    while True:
+        escolha = obter_opcao_usuario()
+        funcoes = obter_funcoes_menu()
+        if escolha == 5:
             print('Obrigado por usar o ContatON CLI. Até logo!')
             break
+        if escolha in funcoes.keys():
+            funcoes[escolha](lista_contatos)
         else:
             print('Opção inválida.')
+            continue
 
 def buscar_contatos(lista_contatos):
     while True:
@@ -127,3 +142,38 @@ def buscar_contatos(lista_contatos):
                 print(f'Telefone: {i['Telefone']}')
                 print(f'E-mail: {i['Email']}\n')
             return
+
+def excluir_contato(lista_contatos):
+    while True:
+        id_contato = str(input('\nDigite o ID do contato que deseja excluir: '))
+        if not id_contato:
+            print('Digite um contato válido.\n')
+            continue
+        contato = None
+        for key, value in enumerate(lista_contatos):
+            if id_contato == value['ID']:
+                posicao = key
+                contato = value
+                break
+        if not contato:
+            print('Contato não encontrado, tente novamente.')
+            continue
+            
+        print('\nContato encontrado:\n')
+        print('🔹Contato')
+        print('Nome:'.ljust(10), contato['Nome'])
+        print('Telefone:'.ljust(10), contato['Telefone'])
+        print('E-mail:'.ljust(10), contato['Email'])
+                    
+        pergunta = str(input('\nDeseja realmente excluir? (S/N): ')).upper().strip()
+
+        if pergunta == 'S':
+            del lista_contatos[posicao]
+            lista_contatos = sorted(lista_contatos, key=lambda x: x['Nome'])
+            with open (FILE_CONTACTS, 'w') as f:
+                f = json.dump(lista_contatos, f, indent=4)
+            print('✅ Contato excluído com sucesso!')
+            return True
+        else:
+            print('\nOK, exclusão de contato cancelada.')
+            return False
