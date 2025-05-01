@@ -5,7 +5,7 @@ def obter_caminho_arquivo():
         caminho_arquivo = './data/contatos.json'
     else:
         os.mkdir('data')
-        with open('data/contatos.json', 'w') as f:
+        with open('data/contatos.json', 'w', encoding='utf-8') as f:
             caminho_arquivo = './data/contatos.json'
     return caminho_arquivo
 
@@ -14,7 +14,7 @@ FILE_CONTACTS = obter_caminho_arquivo()
 def carregar_contatos():
     if os.path.exists(FILE_CONTACTS):
         try:
-            with open(FILE_CONTACTS, 'r') as f:
+            with open(FILE_CONTACTS, 'r', encoding='utf-8') as f:
                 lista_contatos = json.load(f)
                 return lista_contatos
         except json.JSONDecodeError:
@@ -50,6 +50,7 @@ def cadastrar_contato(lista_contatos):
         }
         lista_contatos.append(contato)
         print('\n✅ Contato cadastrado com sucesso.')
+        lista_contatos = sorted(lista_contatos, key=lambda x: x['Nome'])
         salvar_contatos(lista_contatos)
         opcao = str(input('\nDeseja cadastrar um novo contato? (S/N) ')).upper().strip()
         if opcao != 'S':
@@ -71,7 +72,7 @@ def listar_contatos(lista_contatos):
 
 def salvar_contatos(lista_contatos):
     try:
-        with open(FILE_CONTACTS, 'w') as f:
+        with open(FILE_CONTACTS, 'w', encoding='utf-8') as f:
             json.dump(lista_contatos, f, indent=4)
     except Exception as e:
         print(f'Erro inesperado: {e}')
@@ -170,7 +171,7 @@ def excluir_contato(lista_contatos):
         if pergunta == 'S':
             del lista_contatos[posicao]
             lista_contatos = sorted(lista_contatos, key=lambda x: x['Nome'])
-            with open (FILE_CONTACTS, 'w') as f:
+            with open (FILE_CONTACTS, 'w', encoding='utf-8') as f:
                 f = json.dump(lista_contatos, f, indent=4)
             print('✅ Contato excluído com sucesso!')
             return True
