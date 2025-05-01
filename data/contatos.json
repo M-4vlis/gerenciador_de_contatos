@@ -1,20 +1,26 @@
 [
     {
-        "ID": "0ffc4bcd-affb-44d3-a242-59d589d45cc3",
+        "ID": "d1cc7f87-5ffc-4fd0-bae0-33d5f9433c70",
+        "Nome": "Ana Beatriz",
+        "Telefone": "(21) 98888-7777",
+        "Email": "beatriz@gmai.com"
+    },
+    {
+        "ID": "13333c84-bab9-478a-9e22-f604d8c94f3f",
+        "Nome": "Ana Laura",
+        "Telefone": "(21) 90808-6767",
+        "Email": "laura@yahoo.com"
+    },
+    {
+        "ID": "b0b987b6-84ed-4f55-8e82-d399d4a31eb9",
+        "Nome": "Jo\u00e3o Bernardo",
+        "Telefone": "(21) 95555-6666",
+        "Email": "joao@outlook.com"
+    },
+    {
+        "ID": "607a0d18-5def-4e12-8336-7e1c605b9331",
         "Nome": "Mario",
         "Telefone": "(21) 98762-0537",
         "Email": "mario@email.com"
-    },
-    {
-        "ID": "2b339940-0714-4d33-a0f0-16a550b2edc2",
-        "Nome": "Ana Beatriz",
-        "Telefone": "(21) 99138-2919",
-        "Email": "beatriz@gmail.com"
-    },
-    {
-        "ID": "abe225a1-8afa-4ea6-80a5-0c4452462717",
-        "Nome": "Ana Laura",
-        "Telefone": "(21) 99999-9999",
-        "Email": "laura@email.com"
     }
 ]
