@@ -1,4 +1,7 @@
-import os, json, uuid
+import os, json, uuid, re
+
+PATTERN_EMAIL = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+PATTERN_TELEPHONE = r'^(\(?\d{2}\)?\s?)?(9?\d{4})-?\d{4}$'
 
 def obter_caminho_arquivo():
     if os.path.exists('./data'):
@@ -29,15 +32,17 @@ def cadastrar_contato(lista_contatos):
         nome = str(input('Nome: '))
 
         while True:
-            telefone = input('Telefone: ').strip().replace('-', '')
+            telefone = input('Telefone: ').strip()
             telefone_validado = validar_telefone(telefone)
-            if telefone_validado == 'Telefone inválido.':
+            if telefone_validado == 'Telefone inválido':
+                print(f'{telefone_validado}, tente novamente.\n')
                 continue
             break
         while True:
-            email = str(input('E-mail: '))
+            email = str(input('E-mail: ')).strip()
             email_validado = validar_email(email)     
-            if email_validado == 'E-mail inválido, digite novamente.':
+            if email_validado == 'E-mail inválido':
+                print(f'{email_validado}, tente novamente.\n')
                 continue
             break
         
@@ -229,14 +234,15 @@ def validar_email(email):
                 return None
             else:
                 continue
-        if '@' in email and '.' in email:
-            return email
-        else:
-            erro = 'E-mail inválido, digite novamente.'
-            return erro
+        check_email = re.match(PATTERN_EMAIL, email)
+        if check_email == None:
+            return 'E-mail inválido'
+        
+        return email
             
 
 def validar_telefone(telefone):
+    telefone = str(telefone)
     while True:
         if not telefone:
             pergunta = input('Telefone em branco, deseja manter? (S/N)').strip().upper()
@@ -244,11 +250,10 @@ def validar_telefone(telefone):
                 return None
             else:
                 continue
-        if len(telefone) < 11 or not telefone.isdigit():
-            erro = 'Telefone inválido.'
-            return erro
-            
-        telefone = f'({telefone[:2]}) {telefone[2:7]}-{telefone[7:]}'
+        check_tel = re.match(PATTERN_TELEPHONE, telefone)
+        if check_tel == None:
+            return 'Telefone inválido'
+        telefone = formatar_telefone(telefone)
         return telefone
 
 def spinner(texto, qtdVoltas):
@@ -259,4 +264,12 @@ def spinner(texto, qtdVoltas):
         for i in pins:
             print(texto, i, end='\r')
             sleep(0.1)
-    
+
+def formatar_telefone(telefone: str):
+    telefone = (telefone.replace(' ', '')
+                        .replace('-', '')
+                        .replace('(', '')
+                        .replace(')','')
+                        .strip())
+    telefone = f'({telefone[:2]}) {telefone[2:7]}-{telefone[7:]}'
+    return telefone
